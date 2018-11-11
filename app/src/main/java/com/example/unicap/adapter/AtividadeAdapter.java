@@ -43,44 +43,26 @@ public class AtividadeAdapter extends ArrayAdapter<Atividade> {
 
 
 
+    @NonNull
     @RequiresApi(api = Build.VERSION_CODES.P)
     @SuppressLint("SimpleDateFormat")
     @Override
-    public View getView(final int position, final View convertView, ViewGroup parent) {
+    public View getView(final int position, final View convertView, @NonNull ViewGroup parent) {
         View listItem = convertView;
         if (listItem == null)
             listItem = LayoutInflater.from(context).inflate(R.layout.lista_itens_exercicios, parent, false);
 
         final Atividade posicaoAtividade = atividadeList.get(position);
-
         CardView cardView = listItem.findViewById(R.id.cardAtividade);
-
-
         TextView nome = listItem.findViewById(R.id.textNome);
-
-        nome.setText(posicaoAtividade.getLicao().getNome());
-
-
+        TextView progress = listItem.findViewById(R.id.textProgresso);
+        ProgressBar progressBar = listItem.findViewById(R.id.progressBar);
         TextView data = listItem.findViewById(R.id.textData);
 
-
-
-        data.setText(posicaoAtividade.getDataCriacao());
-
-
-        TextView progress = listItem.findViewById(R.id.textProgresso);
-
-
-
-        ProgressBar progressBar = listItem.findViewById(R.id.progressBar);
-
-
-
+        nome.setText(String.format("Lição: %s", posicaoAtividade.getLicao().getNome()));
+        data.setText(String.format("Data Marcada: %s", posicaoAtividade.getDataCriacao()));
         progressBar.setMax(posicaoAtividade.getExercicios().size());
-
         progressBar.setProgress(AtividadesConcluidas(posicaoAtividade.getExercicios()));
-
-
         progress.setText(String.format("%s/%s", String.valueOf(AtividadesConcluidas(posicaoAtividade.getExercicios())), String.valueOf(posicaoAtividade.getExercicios().size())));
 
         cardView.setOnClickListener(new View.OnClickListener() {
@@ -90,8 +72,10 @@ public class AtividadeAdapter extends ArrayAdapter<Atividade> {
 
                 Intent i = new Intent(context.getApplicationContext(),DetalhesExerciciosActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra("Atividade", posicaoAtividade);
-
+                //i.putExtra("Atividade", posicaoAtividade);
+                i.putExtra("AtividadeId", posicaoAtividade.getId());
+                i.putExtra("Paciente",posicaoAtividade.getPaciente());
+                context.getApplicationContext().startActivity(i);
 
                 context.startActivity(i);
 
@@ -106,11 +90,11 @@ public class AtividadeAdapter extends ArrayAdapter<Atividade> {
     private int AtividadesConcluidas (List<Exercicio> exercicioList){
 
 
-   /* "PERFEITO" ;
-    "AGUARDANDO_AVALIACAO" ;
-    "VOCE_PODE_MELHORAR" ;
-    "NAO_REALIZADO" ;
-*/
+    /* "PERFEITO";
+    "AGUARDANDO_AVALIACAO";
+    "VOCE_PODE_MELHORAR";
+    "NAO_REALIZADO";
+    */
         int cont = 0;
 
         for (Exercicio exercicio: exercicioList ) {

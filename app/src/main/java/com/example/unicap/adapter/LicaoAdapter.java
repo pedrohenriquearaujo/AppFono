@@ -37,8 +37,9 @@ public class LicaoAdapter extends ArrayAdapter<Licao> {
     }
 
 
+    @NonNull
     @Override
-    public View getView(final int position, final View convertView, ViewGroup parent) {
+    public View getView(final int position, final View convertView, @NonNull ViewGroup parent) {
 
         View listItem = convertView;
 
@@ -50,10 +51,6 @@ public class LicaoAdapter extends ArrayAdapter<Licao> {
 
         TextView textView = listItem.findViewById(R.id.textLicao);
         textView.setText(posicaoLicao.getDescricao());
-
-
-
-
 
 
         cardView.setOnClickListener(new View.OnClickListener() {

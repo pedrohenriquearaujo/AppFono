@@ -2,6 +2,7 @@ package com.example.unicap.retrofit.Service;
 
 
 import com.example.unicap.model.Atividade;
+import com.example.unicap.model.Exercicio;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ public interface AtividadeService {
     @POST("atividade")
     Call<Atividade> cadastrarAtividade(@Body Atividade a);
 
+    @GET("atividade/{id}")
+    Call<Atividade> AtividadeById(@Path("id") int id);
 
 
 }

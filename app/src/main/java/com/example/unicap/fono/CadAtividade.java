@@ -1,8 +1,10 @@
 package com.example.unicap.fono;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.unicap.adapter.LicaoAdapter;
 import com.example.unicap.retrofit.Config.RetrofitConfig;
@@ -19,8 +21,7 @@ import retrofit2.Response;
 public class CadAtividade extends AppCompatActivity {
 
 
-    private Bundle extra;
-    private Paciente a;
+    private Paciente paciente;
 
 
     @Override
@@ -28,30 +29,28 @@ public class CadAtividade extends AppCompatActivity {
         super.onCreate(savedInstanceState);
             setContentView(R.layout.tela_licoes);
 
-            extra = getIntent().getExtras();
+        Bundle extra = getIntent().getExtras();
         if(extra != null) {
-            a = (Paciente) extra.getSerializable("Paciente");
+            paciente = (Paciente) extra.getSerializable("Paciente");
         }
 
 
         Call<List<Licao>> call = new RetrofitConfig().getLicoesService().GetLicoes();
         call.enqueue(new Callback<List<Licao>>() {
             @Override
-            public void onResponse(Call<List<Licao>> call, Response<List<Licao>> response) {
+            public void onResponse(@NonNull Call<List<Licao>> call, @NonNull Response<List<Licao>> response) {
 
                 List<Licao> listLicoes  =  response.body();
-
                 ListView listView = findViewById(R.id.listViewLicao);
 
-
-                listView.setAdapter(new LicaoAdapter(getApplicationContext(),listLicoes, a));
+                listView.setAdapter(new LicaoAdapter(getApplicationContext(),listLicoes, paciente));
 
             }
 
             @Override
-            public void onFailure(Call<List<Licao>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Licao>> call, @NonNull Throwable t) {
 
-
+                Toast.makeText(CadAtividade.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

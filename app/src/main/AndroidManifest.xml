@@ -19,9 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AtividadesActivity" />
-        <activity android:name=".LicaoActivity" />
         <activity android:name=".CadAtividade" />
-        <activity android:name=".DetalhesActivity" />
         <activity android:name=".ExercicioActivity" />
         <activity android:name=".DetalhesExerciciosActivity" />
     </application>

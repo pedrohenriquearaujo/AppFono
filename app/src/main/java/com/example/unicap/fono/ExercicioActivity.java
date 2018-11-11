@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -45,7 +46,7 @@ public class ExercicioActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tela_exercicios);
+        setContentView(R.layout.tela_cad_exercicios);
         atividade = new Atividade();
         exercicioList = new ArrayList<>();
 
@@ -128,20 +129,21 @@ public class ExercicioActivity extends AppCompatActivity {
 
 
                     @Override
-                    public void onResponse(Call<Atividade> call, Response<Atividade> response) {
+                    public void onResponse(@NonNull Call<Atividade> call, @NonNull Response<Atividade> response) {
                         Log.d("BUG", response.toString());
                         Intent i = new Intent(getApplicationContext(),AtividadesActivity.class); //ir para tela de cadastrar atividade
                         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+                        assert null != response.body();
                         i.putExtra("Paciente",response.body().getPaciente());
 
                         getApplicationContext().startActivity(i);
-                        Toast.makeText(ExercicioActivity.this, "Sucesso ao Cadastrar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ExercicioActivity.this, "Cadastrado Com Sucesso", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(Call<Atividade> call, Throwable t) {
-                        Toast.makeText(ExercicioActivity.this, "Erro ao Cadastrar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ExercicioActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -153,9 +155,6 @@ public class ExercicioActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
-
-
 
                 String dataHoraMarcada = dataFormatada + "T" + hora.getText().toString();
                 Log.d("DATA", dataHoraMarcada);
@@ -172,6 +171,7 @@ public class ExercicioActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
 }

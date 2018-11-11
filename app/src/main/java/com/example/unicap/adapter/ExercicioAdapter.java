@@ -39,28 +39,15 @@ public class ExercicioAdapter  extends ArrayAdapter<Exercicio> {
     public View getView(final int position, final View convertView, ViewGroup parent) {
         View listItem = convertView;
         if (listItem == null)
-            listItem = LayoutInflater.from(context).inflate(R.layout.lista_itens_exercicios, parent, false);
+            listItem = LayoutInflater.from(context).inflate(R.layout.lista_itens_paciente, parent, false);
 
         final Exercicio posicaoPaciente = exercicioArrayList.get(position);
-
-        final ListView listView = listItem.findViewById(R.id.listViewExercicios);
-
-
-        TextView data = listItem.findViewById(R.id.textData);
+        TextView data = listItem.findViewById(R.id.text_idade);
+        TextView nome = listItem.findViewById(R.id.text_nome);
 
 
-        TextView nome = listItem.findViewById(R.id.textNome);
-
-        ProgressBar progressBar = listItem.findViewById(R.id.progressBar);
-
-
-        data.setText(posicaoPaciente.getDataHoraMarcada().replace("T"," "));
-        nome.setText(nomeLicao);
-
-
-
-        progressBar.setVisibility(View.INVISIBLE);
-
+        data.setText(String.format("Dia: %s", posicaoPaciente.getDataHoraMarcada().replace("T", "\nHora Marcada: ")));
+        nome.setText(String.format("Lição: %s", nomeLicao));
 
         return listItem;
     }

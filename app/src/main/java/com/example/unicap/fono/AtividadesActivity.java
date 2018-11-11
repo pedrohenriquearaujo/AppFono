@@ -2,6 +2,7 @@ package com.example.unicap.fono;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +41,8 @@ public class AtividadesActivity extends AppCompatActivity {
         TextView idade = findViewById(R.id.textIdade);
         TextView desc = findViewById(R.id.textDescricao);
 
+        Button button = findViewById (R.id.bt_add_atividade);
+
         nome.setText(String.format("Nome: %s", paciente.getNome()));
         idade.setText(String.format("Data de Nascimento: %s", paciente.getDataNascimento()));
         desc.setText(String.format("Descrição: %s", paciente.getDescricao()));
@@ -50,32 +53,41 @@ public class AtividadesActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<List<Atividade>>() {
             @Override
-            public void onResponse(Call<List<Atividade>> call, Response<List<Atividade>> response) {
+            public void onResponse(@NonNull Call<List<Atividade>> call, @NonNull Response<List<Atividade>> response) {
+
                 List<Atividade> atividadeList = response.body();
                 ListView listView = findViewById(R.id.listViewAtividade);
+
                 listView.setAdapter(new AtividadeAdapter(getApplicationContext(), atividadeList));
-                Toast.makeText(getApplicationContext(),"Atividade do Paciente Carregadas",Toast.LENGTH_SHORT).show();
 
             }
 
             @Override
-            public void onFailure(Call<List<Atividade>> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(),"FALHOU",Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<List<Atividade>> call, @NonNull Throwable t) {
+                    Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
-
-
-        Button button = findViewById (R.id.bt_add_atividade);
 
         button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),CadAtividade.class); //ir para tela de cadastrar atividade
+                Intent i = new Intent(getApplicationContext(),CadAtividade.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.putExtra("Paciente", paciente);
                 getApplicationContext().startActivity(i);
             }
         });
     }
+
+
+
+    public void onBackPressed()
+    {
+        Intent i = new Intent(getApplicationContext(),PacientesActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(i);
+    }
+
+
 }

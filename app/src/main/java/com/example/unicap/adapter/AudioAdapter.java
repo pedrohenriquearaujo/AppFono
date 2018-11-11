@@ -3,6 +3,7 @@ package com.example.unicap.adapter;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +45,9 @@ public class AudioAdapter  extends ArrayAdapter<Exercicio> {
         this.atividade = a;
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, final View convertView, ViewGroup parent) {
+    public View getView(final int position, final View convertView, @NonNull ViewGroup parent) {
 
 
         View listItem = convertView;
@@ -70,8 +72,13 @@ public class AudioAdapter  extends ArrayAdapter<Exercicio> {
         final Button bt_melhorar = listItem.findViewById(R.id.bt_melhorar);
 
         audio = false;
+        bt_reproduzir.setEnabled(true);
         bt_aprovado.setEnabled(false);
         bt_melhorar.setEnabled(false);
+
+        if (exercicio.getStatus().compareToIgnoreCase("NAO_REALIZADO") == 0){
+            bt_reproduzir.setEnabled(false);
+        }
 
         bt_reproduzir.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +88,7 @@ public class AudioAdapter  extends ArrayAdapter<Exercicio> {
                 bt_aprovado.setEnabled(true);
 
                 if(isAudio()) {
-                    playMp3(exercicioList.get(0).getAudio());
+                    playMp3(exercicioList.get(position).getAudio());
                 }else{
                     mediaPlayer.stop();
                 }
@@ -94,9 +101,8 @@ public class AudioAdapter  extends ArrayAdapter<Exercicio> {
 
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Excelente", Toast.LENGTH_LONG).show();
 
-                //query
+                Toast.makeText(context, "Status: Excelente Definido", Toast.LENGTH_LONG).show();
 
                 atividade.getExercicios().get(position).setStatus("PERFEITO");
 
@@ -106,7 +112,7 @@ public class AudioAdapter  extends ArrayAdapter<Exercicio> {
 
                 call.enqueue(new Callback<Exercicio>() {
                     @Override
-                    public void onResponse(Call<Exercicio> call, Response<Exercicio> response) {
+                    public void onResponse(@NonNull Call<Exercicio> call, @NonNull Response<Exercicio> response) {
 
                         Exercicio atividadeList = response.body();
                         Toast.makeText(context,"Status Atualizado",Toast.LENGTH_SHORT).show();
@@ -114,9 +120,9 @@ public class AudioAdapter  extends ArrayAdapter<Exercicio> {
                     }
 
                     @Override
-                    public void onFailure(Call<Exercicio> call, Throwable t) {
+                    public void onFailure(@NonNull Call<Exercicio> call, @NonNull Throwable t) {
 
-                        Toast.makeText(context,"FALHOU",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,t.getMessage(),Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -138,11 +144,7 @@ public class AudioAdapter  extends ArrayAdapter<Exercicio> {
             public void onClick(View v) {
 
 
-                Toast.makeText(context, "Melhorar", Toast.LENGTH_LONG).show();
-
-
-                //query
-
+                Toast.makeText(context, "Status: Voce pode Melhor Definido", Toast.LENGTH_LONG).show();
 
                 atividade.getExercicios().get(position).setStatus("VOCE_PODE_MELHORAR");
 
@@ -153,7 +155,6 @@ public class AudioAdapter  extends ArrayAdapter<Exercicio> {
                     @Override
                     public void onResponse(Call<Exercicio> call, Response<Exercicio> response) {
 
-                        Exercicio atividadeList = response.body();
                         Toast.makeText(context,"Status Atualizado",Toast.LENGTH_SHORT).show();
 
                     }
@@ -161,7 +162,7 @@ public class AudioAdapter  extends ArrayAdapter<Exercicio> {
                     @Override
                     public void onFailure(Call<Exercicio> call, Throwable t) {
 
-                        Toast.makeText(context,"FALHOU",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,t.getMessage(),Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -191,22 +192,15 @@ public class AudioAdapter  extends ArrayAdapter<Exercicio> {
     private void playMp3(byte[] mp3SoundByteArray) {
 
         try {
-            // create temp file that will hold byte array
+
             File tempMp3 = File.createTempFile("audio", "mp3", this.getContext().getCacheDir());
             tempMp3.deleteOnExit();
             FileOutputStream fos = new FileOutputStream(tempMp3);
             fos.write(mp3SoundByteArray);
             fos.close();
 
-            // resetting mediaplayer instance to evade problems
             mediaPlayer.reset();
 
-            // In case you run into issues with threading consider new instance like:
-            // MediaPlayer mediaPlayer = new MediaPlayer();
-
-            // Tried passing path directly, but kept getting
-            // "Prepare failed.: status=0x1"
-            // so using file descriptor instead
             FileInputStream fis = new FileInputStream(tempMp3);
             mediaPlayer.setDataSource(fis.getFD());
 
@@ -217,6 +211,8 @@ public class AudioAdapter  extends ArrayAdapter<Exercicio> {
             ex.printStackTrace();
         }
     }
+
+
 
 
 

@@ -18,7 +18,10 @@ import com.example.unicap.fono.AtividadesActivity;
 import com.example.unicap.fono.R;
 import com.example.unicap.model.Paciente;
 
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PacienteAdapter extends ArrayAdapter<Paciente> {
@@ -37,6 +40,7 @@ public class PacienteAdapter extends ArrayAdapter<Paciente> {
     @NonNull
     @Override
     public View getView(final int position, final View convertView, @NonNull ViewGroup parent) {
+
         View listItem = convertView;
         if (listItem == null)
             listItem = LayoutInflater.from(context).inflate(R.layout.lista_itens_paciente, parent, false);
